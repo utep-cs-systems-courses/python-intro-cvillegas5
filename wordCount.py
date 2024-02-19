@@ -6,11 +6,12 @@ import sys
 import subprocess
 
 
-if len(sys.argv) is not 4:
+if len(sys.argv) is not 3:
+    print("invalid argument count")
     exit()
 
-textFname = sys.argv[1]
-inputFile = sys.argv[2]
+textFname = sys.argv[0]
+inputFile = sys.argv[1]
 
 
 #fd = os.open(sys.argv[2], os.O_RDONLY)
@@ -28,9 +29,13 @@ with open(inputFile, 'r') as inputFile:
             else:
                 master[x] = 1
 
-fd = os.open(sys.argv[3], os.O_WRONLY | os.O_CREAT)
-for key, value in master.items():
-    newLine = str(key) + " " + str(value)
-    os.write(fd, newLine)
+masterKeys = list(master.keys())
+masterKeys.sort()
+sortedMaster = {i: master[i] for i in masterKeys}
+
+fd = os.open(sys.argv[2], os.O_WRONLY | os.O_CREAT)
+for key, value in sortedMaster.items():
+    newLine = str(key) + " " + str(value) +"\n"
+    os.write(fd, newLine.encode())
 
 os.close(fd)
